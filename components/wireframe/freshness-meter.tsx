@@ -6,9 +6,10 @@ interface FreshnessMeterProps {
   hours: number
   maxHours?: number
   className?: string
+  compact?: boolean
 }
 
-export function FreshnessMeter({ hours, maxHours = 72, className }: FreshnessMeterProps) {
+export function FreshnessMeter({ hours, maxHours = 72, className, compact = false }: FreshnessMeterProps) {
   const percentage = Math.min((hours / maxHours) * 100, 100)
   
   const getColor = () => {
@@ -21,6 +22,25 @@ export function FreshnessMeter({ hours, maxHours = 72, className }: FreshnessMet
     if (percentage < 33) return "SARIWA"
     if (percentage < 66) return "OK"
     return "HINDI NA SARIWA"
+  }
+
+  if (compact) {
+    return (
+      <div className={cn("flex items-center gap-2", className)}>
+        <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden border border-border">
+          <div 
+            className={cn("h-full transition-all duration-500 rounded-full", getColor())}
+            style={{ width: `${100 - percentage}%` }}
+          />
+        </div>
+        <span className={cn(
+          "text-[9px] font-mono font-medium",
+          percentage < 33 ? "text-accent" : percentage < 66 ? "text-warning" : "text-destructive"
+        )}>
+          {hours}h
+        </span>
+      </div>
+    )
   }
 
   return (
